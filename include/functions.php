@@ -190,12 +190,26 @@ function registration($connection) {
             echo 'Error';
             exit;
         } else {
+
+            //Validate's the  user input
             $username = trim($_POST['username']);
             $password = trim($_POST['password']);
+            $username_esc = mysqli_real_escape_string($connection, $username);
+            $password_esc = mysqli_real_escape_string($connection, $password);
             $_SESSION['user'] = $username;
-            if (mb_strlen($username) >= 3 && mb_strlen($password) >= 3 && !(int) $username) {
-                $username_esc = mysqli_real_escape_string($connection, $username);
-                $password_esc = mysqli_real_escape_string($connection, $password);
+
+            //Check if the username and the password matches the requirements
+            if (mb_strlen($username_esc) >= 3 && mb_strlen($password_esc) >= 3 && !(int) $username_esc) {
+
+
+                ///Check if the username is available
+                $query = mysqli_query($connection, 'SELECT username FROM users');
+                while ($user = $query->fetch_assoc()) {
+                    if ($user['username'] === $username_esc) {
+                        echo $username . " already exist, please try with a different username";
+                        exit();
+                    }
+                }
 
                 $sql = 'INSERT INTO users (username,password)VALUES("' . $username_esc . '","' . $password_esc . '")';
                 $insert = mysqli_query($connection, $sql);
@@ -228,7 +242,4 @@ function order_main_menu() {
         <?php
     }
 }
-
-// w2
-//check for coincidence in partiqular database
 
