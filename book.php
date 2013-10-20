@@ -11,13 +11,14 @@ order_main_menu();
     Title <input type="text" name ="title"/><br>
     Authors <select name="authors[]" multiple >
         <?php
-        add_books();
+select_menue_options()
         ?>
     </select><br>
     <input type="hidden" value="1"  name="isAddedBook">
     <input type="submit" value="Add"/>
     <?php
-    add();
+    //add();
+    // TODO add() 
     ?>
 </form>
 
