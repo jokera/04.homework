@@ -88,7 +88,7 @@ function printAllBooks() {
     while ($row = $books->fetch_assoc()) {
         ?>
         <tr>
-            <td ><?php echo $row['book_title']; ?></td>
+            <td ><a href= "book.php?book_id=<?php echo $row['book_id'] ?>"> <?php echo $row['book_title']; ?></a></td>
             <td>
                 <?php
                 $sql = "SELECT *
@@ -146,9 +146,7 @@ function printAllAuthors() {
                                             ON authors.author_id = books_authors.author_id
                                             WHERE authors.author_id=' . $_GET['author_id'] . ')';
 
-
             $authors = mysqli_query($connection, $sql);
-
             echo '<td>';
             while ($r = mysqli_fetch_assoc($authors)) {
                 if ($row['book_title'] === $r['book_title']) {
@@ -257,19 +255,19 @@ function login() {
             $username = mysqli_real_escape_string($connection, $username);
             $password = mysqli_real_escape_string($connection, $password);
 
-              $sql = "SELECT username,password FROM users where username = '".$username."' AND password ='". $password."'";
-           
+            $sql = "SELECT username,password FROM users where username = '" . $username . "' AND password ='" . $password . "'";
+
             $validate_credentials = mysqli_query($connection, $sql);
             while ($row = $validate_credentials->fetch_assoc()) {
-                if ($row['username'] === $username && $row['password'] === $password) {       
+                if ($row['username'] === $username && $row['password'] === $password) {
                     echo 'Success';
                     $_SESSION['is_logged'] = true;
                     $_SESSION['user'] = $username;
                     header('Location: index.php');
                     exit;
-                } 
+                }
             }
-             echo '<p>Invalid username or password<p>'; 
+            echo '<p>Invalid username or password<p>';
         }
     }
 }
