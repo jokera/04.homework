@@ -12,6 +12,7 @@ include './include/functions.php';
     Password<div><input type="password" name ="password"/></div>
     <div><input type="submit" value ="Registration"/></div>
     <?php
+    login();
     ?>
 </form>
 

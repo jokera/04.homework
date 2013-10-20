@@ -167,7 +167,6 @@ function printAllAuthors() {
 }
 
 // Create's the URL for sorting
-
 function print_content() {
     if (!$_GET['author_id']) {
         printAllBooks();
@@ -227,7 +226,9 @@ function welcome_user() {
 
     if ($_SESSION['is_logged']) {
         echo '<h3>Welcome, ' . $_SESSION['user'] . '</h3><br>';
+        return true;
     }
+    return false;
 }
 
 function order_main_menu() {
@@ -244,5 +245,10 @@ function order_main_menu() {
 }
 
 function login(){
+    
+    if(welcome_user()){
+        header('Location: index.php');
+        exit;
+    }
     
 }
