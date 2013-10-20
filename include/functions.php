@@ -56,7 +56,7 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
     global $connection;
     mysqli_set_charset($connection, 'utf8');
     if ($_POST) {
-$user = $_SESSION['user_id'];
+        $user = $_SESSION['user_id'];
         mysqli_query($connection, $sql);
         $book_id = mysqli_insert_id($connection);
         if (!$validator) {
@@ -64,10 +64,9 @@ $user = $_SESSION['user_id'];
                 $sql2 = 'INSERT INTO `books_authors`(`book_id`,`author_id`) VALUES("' . (int) $book_id . '","' . (int) $author . '")';
                 mysqli_query($connection, $sql2);
             }
-        }
-        else{
-           // TODO: Second function logic
-             foreach ($my_choices as $author) {
+        } else {
+            // TODO: Second function logic
+            foreach ($my_choices as $author) {
                 $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`) VALUES("' . (int) $book_id . '","' . $user . '")';
                 mysqli_query($connection, $sql2);
             }
@@ -109,8 +108,8 @@ function printAllBooks() {
                         <?php
                         echo $author['author_name'] . '/ ';
                         ?></a><?php
-                }
-                ?>
+                    }
+                    ?>
             </td>
         </tr>
         <?php
@@ -216,6 +215,7 @@ function registration($connection) {
             $sql = 'INSERT INTO users (username,password)VALUES("' . $username_esc . '","' . $password_esc . '")';
             $insert = mysqli_query($connection, $sql);
             echo 'Successful registration';
+            $_SESSION['user'] = $username_esc;
             $_SESSION['is_logged'] = true;
             exit;
         } else {
