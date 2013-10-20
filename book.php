@@ -20,8 +20,11 @@ order_main_menu();
     <input type="hidden" value="1"  name="isAddedBook">
     <input type="submit" value="Add"/>
     <?php
-    //add();
-    // TODO add() 
+    $validator = true;
+    $my_choices = $_POST['books'];
+    $title = $_POST['comment'];
+    $sql = "INSERT INTO comments(comment,date) VALUES ('$title',NOW())";
+        insert_user_data($my_choices, $title, $sql, $validator);
     ?>
 </form>
 

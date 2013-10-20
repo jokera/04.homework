@@ -56,7 +56,7 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
     global $connection;
     mysqli_set_charset($connection, 'utf8');
     if ($_POST) {
-
+$user = $_SESSION['user_id'];
         mysqli_query($connection, $sql);
         $book_id = mysqli_insert_id($connection);
         if (!$validator) {
@@ -67,6 +67,10 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
         }
         else{
            // TODO: Second function logic
+             foreach ($my_choices as $author) {
+                $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`) VALUES("' . (int) $book_id . '","' . $user . '")';
+                mysqli_query($connection, $sql2);
+            }
         }
     }
 }
@@ -259,7 +263,7 @@ function login() {
             $username = mysqli_real_escape_string($connection, $username);
             $password = mysqli_real_escape_string($connection, $password);
 
-            $sql = "SELECT username,password FROM users where username = '" . $username . "' AND password ='" . $password . "'";
+            $sql = "SELECT * FROM users";
 
             $validate_credentials = mysqli_query($connection, $sql);
             while ($row = $validate_credentials->fetch_assoc()) {
@@ -267,6 +271,7 @@ function login() {
                     echo 'Success';
                     $_SESSION['is_logged'] = true;
                     $_SESSION['user'] = $username;
+                    $_SESSION['user_id'] = $row['user_id'];
                     header('Location: index.php');
                     exit;
                 }
