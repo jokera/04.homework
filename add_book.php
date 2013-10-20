@@ -10,7 +10,10 @@ include './include/functions.php';
     Title <input type="text" name ="title"/><br>
     Authors <select name="authors[]" multiple >
         <?php
-        add_books();
+        $id = 'author_id';
+        $value = 'author_name';
+        $sql = 'SELECT * FROM authors';
+        select_menue_options($sql, $id, $value);
         ?>
     </select><br>
     <input type="hidden" value="1"  name="isAddedBook">

@@ -43,15 +43,15 @@ function authors() {
     echo '</table>';
 }
 
-// select multiple authors and add a book
 
-function add_books() {
+function select_menue_options($sql,$id,$value) {
+    
     global $connection;
     mysqli_set_charset($connection, 'utf8');
-    $sql = "SELECT * FROM authors";
+    
     $row = mysqli_query($connection, $sql);
     while ($r = $row->fetch_assoc()) {
-        echo "<option value =" . $r['author_id'] . ">" . $r['author_name'] . '</option>';
+        echo "<option value =" . $r[$id] . ">" . $r[$value] . '</option>';
     }
 }
 
