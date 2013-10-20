@@ -1,12 +1,10 @@
 <?php
 // TASKS: 
-// TODO : Check if the book already exists
+// Check if the book already exists
 // check the author if alredy exists 
-// include header and footer 
-// check for db errors
-// make the code shorter with advanced functions
-// create sort for the results
-// make a login field 
+// Create book page 
+
+
 
 error_reporting(E_ALL ^ E_NOTICE);
 $connection = mysqli_connect('localhost', 'gatakka', 'qwerty', 'books');
@@ -195,29 +193,27 @@ function registration($connection) {
             $password = trim($_POST['password']);
             $username_esc = mysqli_real_escape_string($connection, $username);
             $password_esc = mysqli_real_escape_string($connection, $password);
-            $_SESSION['user'] = $username;
+        }
 
-            //Check if the username and the password matches the requirements
-            if (mb_strlen($username_esc) >= 3 && mb_strlen($password_esc) >= 3 && !(int) $username_esc) {
+        //Check if the username and the password matches the requirements
+        if (mb_strlen($username_esc) >= 3 && mb_strlen($password_esc) >= 3 && !(int) $username_esc) {
 
-
-                ///Check if the username is available
-                $query = mysqli_query($connection, 'SELECT username FROM users');
-                while ($user = $query->fetch_assoc()) {
-                    if ($user['username'] === $username_esc) {
-                        echo $username . " already exist, please try with a different username";
-                        exit();
-                    }
+            ///Check if the username is available
+            $query = mysqli_query($connection, 'SELECT username FROM users');
+            while ($user = $query->fetch_assoc()) {
+                if ($user['username'] === $username_esc) {
+                    echo $username . " already exist, please try with a different username";
+                    exit();
                 }
-
-                $sql = 'INSERT INTO users (username,password)VALUES("' . $username_esc . '","' . $password_esc . '")';
-                $insert = mysqli_query($connection, $sql);
-                echo 'Successful registration';
-                $_SESSION['is_logged'] = true;
-                exit;
-            } else {
-                echo 'Invalid username or password';
             }
+
+            $sql = 'INSERT INTO users (username,password)VALUES("' . $username_esc . '","' . $password_esc . '")';
+            $insert = mysqli_query($connection, $sql);
+            echo 'Successful registration';
+            $_SESSION['is_logged'] = true;
+            exit;
+        } else {
+            echo 'Invalid username or password';
         }
     }
 }
@@ -244,11 +240,36 @@ function order_main_menu() {
     }
 }
 
-function login(){
-    
-    if(welcome_user()){
+function login() {
+    global $connection;
+    mysqli_set_charset($connection, 'utf8');
+    if (welcome_user()) {
         header('Location: index.php');
         exit;
     }
-    
+    if ($_POST) {
+        if (!$connection) {
+            echo 'Error';
+            exit;
+        } else {
+            $username = trim($_POST['username']);
+            $password = trim($_POST['password']);
+            $username = mysqli_real_escape_string($connection, $username);
+            $password = mysqli_real_escape_string($connection, $password);
+
+              $sql = "SELECT username,password FROM users where username = '".$username."' AND password ='". $password."'";
+           
+            $validate_credentials = mysqli_query($connection, $sql);
+            while ($row = $validate_credentials->fetch_assoc()) {
+                if ($row['username'] === $username && $row['password'] === $password) {       
+                    echo 'Success';
+                    $_SESSION['is_logged'] = true;
+                    $_SESSION['user'] = $username;
+                    header('Location: index.php');
+                    exit;
+                } 
+            }
+             echo '<p>Invalid username or password<p>'; 
+        }
+    }
 }
