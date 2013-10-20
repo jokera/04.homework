@@ -8,10 +8,13 @@ order_main_menu();
 ?>
 <a href ="index.php">Home</a>
 <form method="POST">
-    Title <input type="text" name ="title"/><br>
-    Authors <select name="authors[]" multiple >
+    Comment <input type="text" name ="comment"/><br>
+    Books <select name="books[]" multiple >
         <?php
-select_menue_options()
+        $id = 'book_id';
+        $value = 'book_title';
+        $sql = 'SELECT * FROM books';
+        select_menue_options($sql, $id, $value);
         ?>
     </select><br>
     <input type="hidden" value="1"  name="isAddedBook">
@@ -22,6 +25,6 @@ select_menue_options()
     ?>
 </form>
 
-<?php 
+<?php
 include './include/footer.php';
 
