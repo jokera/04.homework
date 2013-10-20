@@ -19,7 +19,10 @@ include './include/functions.php';
     <input type="hidden" value="1"  name="isAddedBook">
     <input type="submit" value="Add"/>
     <?php
-    add();
+    $my_choices = $_POST['authors'];
+    $title = $_POST['title'];
+    $sql = "INSERT INTO books(book_title) VALUES ('$title')";
+    insert_user_data($my_choices, $title, $sql);
     ?>
 </form>
 <?php

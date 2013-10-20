@@ -44,28 +44,24 @@ function authors() {
 }
 
 
-function select_menue_options($sql,$id,$value) {
-    
+function select_menue_options($sql,$id,$value) {  
     global $connection;
-    mysqli_set_charset($connection, 'utf8');
-    
+    mysqli_set_charset($connection, 'utf8'); 
     $row = mysqli_query($connection, $sql);
     while ($r = $row->fetch_assoc()) {
         echo "<option value =" . $r[$id] . ">" . $r[$value] . '</option>';
     }
 }
 
-function add() {
+function insert_user_data($my_choices,$title,$sql){
     global $connection;
     mysqli_set_charset($connection, 'utf8');
     if ($_POST) {
-        $my_choices = $_POST['authors'];
-        $title = $_POST['title'];
-        $sql = "INSERT INTO books(book_title) VALUES ('$title')";
         mysqli_query($connection, $sql);
-        $book_id = mysqli_insert_id($connection);
+        $book_id = mysqli_insert_id($connection);  
         foreach ($my_choices as $author) {
-            mysqli_query($connection, 'INSERT INTO `books_authors`(`book_id`,`author_id`) VALUES("' . (int) $book_id . '","' . (int) $author . '")');
+            $sql2 = 'INSERT INTO `books_authors`(`book_id`,`author_id`) VALUES("' . (int) $book_id . '","' . (int) $author . '")';
+            mysqli_query($connection, $sql2);
         }
     }
 }
@@ -102,7 +98,7 @@ function printAllBooks() {
                     ?>
                     <a href= "index.php?author_id=<?php echo $author['author_id']; ?>">
                         <?php
-                        echo $author['author_name'] . ', ';
+                        echo $author['author_name'] . '/ ';
                         ?></a><?php
                 }
                 ?>
@@ -154,7 +150,7 @@ function printAllAuthors() {
                 while ($r = mysqli_fetch_assoc($authors)) {
                     if ($row['book_title'] === $r['book_title']) {
 
-                        echo '<a href="index.php?author_id=' . (int) $r['author_id'] . '">' . $r['author_name'] . ', ';
+                        echo '<a href="index.php?author_id=' . (int) $r['author_id'] . '">' . $r['author_name'] . '/ ';
                         echo '</a>';
                     }
                 }
