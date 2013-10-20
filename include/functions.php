@@ -43,25 +43,30 @@ function authors() {
     echo '</table>';
 }
 
-
-function select_menue_options($sql,$id,$value) {  
+function select_menue_options($sql, $id, $value) {
     global $connection;
-    mysqli_set_charset($connection, 'utf8'); 
+    mysqli_set_charset($connection, 'utf8');
     $row = mysqli_query($connection, $sql);
     while ($r = $row->fetch_assoc()) {
         echo "<option value =" . $r[$id] . ">" . $r[$value] . '</option>';
     }
 }
 
-function insert_user_data($my_choices,$title,$sql){
+function insert_user_data($my_choices, $title, $sql, $validator) {
     global $connection;
     mysqli_set_charset($connection, 'utf8');
     if ($_POST) {
+
         mysqli_query($connection, $sql);
-        $book_id = mysqli_insert_id($connection);  
-        foreach ($my_choices as $author) {
-            $sql2 = 'INSERT INTO `books_authors`(`book_id`,`author_id`) VALUES("' . (int) $book_id . '","' . (int) $author . '")';
-            mysqli_query($connection, $sql2);
+        $book_id = mysqli_insert_id($connection);
+        if (!$validator) {
+            foreach ($my_choices as $author) {
+                $sql2 = 'INSERT INTO `books_authors`(`book_id`,`author_id`) VALUES("' . (int) $book_id . '","' . (int) $author . '")';
+                mysqli_query($connection, $sql2);
+            }
+        }
+        else{
+           // TODO: Second function logic
         }
     }
 }
