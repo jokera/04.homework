@@ -120,18 +120,21 @@ function printAllAuthors() {
     if ($_GET['author_id']) {
 
         if ($_GET['Bsort'] === 'ON') {
-            $sql = 'SELECT book_title FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'] . ' ORDER BY book_title DESC';
+            $sql = 'SELECT * FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'] . ' ORDER BY book_title DESC';
         } else {
-            $sql = 'SELECT book_title FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'];
+            $sql = 'SELECT * FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'];
         }
         $books = mysqli_query($connection, $sql);
         while ($row = mysqli_fetch_assoc($books)) {
             echo mysqli_error($connection);
-            echo '<tr><td>' . $row['book_title'];
+            ?>
 
-            echo '</td>';
 
-            $sql = 'SELECT books.book_title,books.book_id, authors.author_name, authors.author_id
+            <tr><td><a href= "book.php?book_id=<?php echo $row['book_id'] ?>"> <?php echo $row['book_title']; ?></a>
+
+                </td>
+                <?php
+                $sql = 'SELECT books.book_title,books.book_id, authors.author_name, authors.author_id
                     FROM books
                     LEFT JOIN books_authors
                     ON books.book_id = books_authors.book_id
@@ -146,17 +149,17 @@ function printAllAuthors() {
                                             ON authors.author_id = books_authors.author_id
                                             WHERE authors.author_id=' . $_GET['author_id'] . ')';
 
-            $authors = mysqli_query($connection, $sql);
-            echo '<td>';
-            while ($r = mysqli_fetch_assoc($authors)) {
-                if ($row['book_title'] === $r['book_title']) {
+                $authors = mysqli_query($connection, $sql);
+                echo '<td>';
+                while ($r = mysqli_fetch_assoc($authors)) {
+                    if ($row['book_title'] === $r['book_title']) {
 
-                    echo '<a href="index.php?author_id=' . (int) $r['author_id'] . '">' . $r['author_name'] . ', ';
-                    echo '</a>';
+                        echo '<a href="index.php?author_id=' . (int) $r['author_id'] . '">' . $r['author_name'] . ', ';
+                        echo '</a>';
+                    }
                 }
             }
-        }
-        ?>
+            ?>
         </td></tr>
         <?php
     }
