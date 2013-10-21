@@ -66,7 +66,7 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
         } else {
 
             foreach ($my_choices as $author) {
-                $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`,`book_id`) VALUES("' . (int) $book_id . '","' . $user . '","' .$author . '")';
+                $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`,`book_id`) VALUES("' . (int) $book_id . '","' . $user . '","' . $author . '")';
                 mysqli_query($connection, $sql2);
             }
         }
@@ -297,15 +297,13 @@ function display_comments() {
             FROM comments 
             JOIN users_comments  ON users_comments.comment_id = comments.comment_id
             JOIN users ON users.user_id = users_comments.user_id
-            WHERE users_comments.book_id =" . $_GET['book_id'] . " group by comments.`comment`
-				";
-    printAllBooks();
+            WHERE users_comments.book_id =" . $_GET['book_id'] . " group by comments.`comment` ORDER by date DESC";
+    // printAllBooks();
     $book_info = mysqli_query($connection, $sql);
     ?>  <table = border = "4"><thead><th>Comments</th><th>User</th><th>Date</th></thead>
     <?php
     while ($row = $book_info->fetch_assoc()) {
         ?>
-
         <tr><td><?php echo $row['comment']; ?></td>
             <td><?php echo $row['username']; ?></td>
             <td><?php echo $row['date']; ?></td>
@@ -316,5 +314,5 @@ function display_comments() {
     </table>
 
     <?php
-    echo '<pre>' . print_r($_GET,TRUE) . '</pre>';
+    // echo '<pre>' . print_r($_GET,TRUE) . '</pre>';
 }
