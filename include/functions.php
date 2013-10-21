@@ -2,7 +2,7 @@
 // TASKS: 
 // Check if the book already exists
 // check the author if alredy exists 
-// Create book page 
+
 
 error_reporting(E_ALL ^ E_NOTICE);
 
@@ -17,12 +17,28 @@ function add_author() {
     mysqli_set_charset($connection, 'utf8');
     if (isset($_GET['author'])) {
         $author_name = trim($_GET['author']);
+        $author_name = mysqli_real_escape_string($connection,$author_name);
+        // check if the author already exists
+         $query = mysqli_query($connection, 'SELECT author_name FROM authors');
+            while ($user = $query->fetch_assoc()) {
+                if ($user['author_name'] === $author_name) {
+                    echo "This author '".$author_name."' already exist " ;
+                    exit();
+                }
+            }
         $author_name = mysqli_real_escape_string($connection, $author_name);
         mysqli_query($connection, "INSERT INTO authors(author_name) VALUES('$author_name')");
         header('Location: add_author.php');
         exit(0);
     }
 }
+
+function check_for_duplicate($customer_choice,$result,$sql,$message){
+    //TODO: solve the function
+}
+
+
+
 
 function authors() {
     global $connection;
@@ -314,5 +330,5 @@ function display_comments() {
     </table>
 
     <?php
-    // echo '<pre>' . print_r($_GET,TRUE) . '</pre>';
+   
 }
