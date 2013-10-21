@@ -4,9 +4,8 @@
 // check the author if alredy exists 
 // Create book page 
 
-
-
 error_reporting(E_ALL ^ E_NOTICE);
+
 $connection = mysqli_connect('localhost', 'gatakka', 'qwerty', 'books');
 
 if (!$connection) {
@@ -25,7 +24,6 @@ function add_author() {
     }
 }
 
-//Prints author names
 function authors() {
     global $connection;
     mysqli_set_charset($connection, 'utf8');
@@ -68,7 +66,7 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
         } else {
 
             foreach ($my_choices as $author) {
-                $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`,`book_id`) VALUES("' . (int) $book_id . '","' . $user . '","' . $_GET['book_id'] . '")';
+                $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`,`book_id`) VALUES("' . (int) $book_id . '","' . $user . '","' .$author . '")';
                 mysqli_query($connection, $sql2);
             }
         }
@@ -88,32 +86,37 @@ function printAllBooks() {
         $sql = 'SELECT * FROM books order by book_title desc';
     }
     $books = mysqli_query($connection, $sql);
-
-    while ($row = $books->fetch_assoc()) {
-        ?>
-        <tr>
-            <td ><a href= "book.php?book_id=<?php echo $row['book_id'] ?>"> <?php echo $row['book_title']; ?></a></td>
-            <td>
-                <?php
-                $sql = "SELECT *
+    ?>
+    <table border= "4">
+        <?php
+        while ($row = $books->fetch_assoc()) {
+            ?>
+            <tr>
+                <td ><a href= "book.php?book_id=<?php echo $row['book_id'] ?>"> <?php echo $row['book_title']; ?></a></td>
+                <td>
+                    <?php
+                    $sql = "SELECT *
                         FROM authors 
                         JOIN books_authors ON authors.author_id=books_authors.author_id 
                         WHERE books_authors.book_id =" . $row['book_id'];
 
-                $authors = mysqli_query($connection, $sql);
+                    $authors = mysqli_query($connection, $sql);
 
-                while ($author = mysqli_fetch_assoc($authors)) {
+                    while ($author = mysqli_fetch_assoc($authors)) {
+                        ?>
+                        <a href= "index.php?author_id=<?php echo $author['author_id']; ?>">
+                            <?php
+                            echo $author['author_name'] . '/ ';
+                            ?></a><?php
+                    }
                     ?>
-                    <a href= "index.php?author_id=<?php echo $author['author_id']; ?>">
-                        <?php
-                        echo $author['author_name'] . '/ ';
-                        ?></a><?php
-                }
-                ?>
-            </td>
-        </tr>
-        <?php
-    }
+                </td>
+            </tr>
+            <?php
+        }
+        ?>
+    </table>
+    <?php
 }
 
 function printAllAuthors() {
@@ -129,16 +132,19 @@ function printAllAuthors() {
             $sql = 'SELECT * FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'];
         }
         $books = mysqli_query($connection, $sql);
-        while ($row = mysqli_fetch_assoc($books)) {
-            echo mysqli_error($connection);
-            ?>
+        ?>
+        <table border="4">
+            <?php
+            while ($row = mysqli_fetch_assoc($books)) {
+                echo mysqli_error($connection);
+                ?>
 
 
-            <tr><td><a href= "book.php?book_id=<?php echo $row['book_id'] ?>"> <?php echo $row['book_title']; ?></a>
+                <tr><td><a href= "book.php?book_id=<?php echo $row['book_id'] ?>"> <?php echo $row['book_title']; ?></a>
 
-                </td>
-                <?php
-                $sql = 'SELECT books.book_title,books.book_id, authors.author_name, authors.author_id
+                    </td>
+                    <?php
+                    $sql = 'SELECT books.book_title,books.book_id, authors.author_name, authors.author_id
                     FROM books
                     LEFT JOIN books_authors
                     ON books.book_id = books_authors.book_id
@@ -153,23 +159,25 @@ function printAllAuthors() {
                                             ON authors.author_id = books_authors.author_id
                                             WHERE authors.author_id=' . $_GET['author_id'] . ')';
 
-                $authors = mysqli_query($connection, $sql);
-                echo '<td>';
-                while ($r = mysqli_fetch_assoc($authors)) {
-                    if ($row['book_title'] === $r['book_title']) {
+                    $authors = mysqli_query($connection, $sql);
+                    echo '<td>';
+                    while ($r = mysqli_fetch_assoc($authors)) {
+                        if ($row['book_title'] === $r['book_title']) {
 
-                        echo '<a href="index.php?author_id=' . (int) $r['author_id'] . '">' . $r['author_name'] . '/ ';
-                        echo '</a>';
+                            echo '<a href="index.php?author_id=' . (int) $r['author_id'] . '">' . $r['author_name'] . '/ ';
+                            echo '</a>';
+                        }
                     }
                 }
-            }
-            ?>
-        </td></tr>
-        <?php
-    }
+                ?>
+                </td></tr>
+            <?php
+        }
+        ?>
+    </table>
+    <?php
 }
 
-// Create's the URL for sorting
 function print_content() {
     if (!$_GET['author_id']) {
         printAllBooks();
@@ -180,9 +188,8 @@ function print_content() {
 
 function sort_options($filter1, $filter2) {
     ?>
-    <th><a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter1; ?>">Books</a></th>
-    <th><a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter2; ?>">Authors</a></th>
-    </thead>
+    Sort by<div><a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter1; ?>">Books</a>
+        <a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter2; ?>">Authors</a></div>
     <?php
 }
 
@@ -282,32 +289,32 @@ function login() {
 }
 
 function display_comments() {
-    ?>
-    <table border ="4">
-        <thead><th>Book Title</th><th>Authors</th><th>Comments</th><th>User</th><th>Date</th></thead>
-    <?php
+
     global $connection;
     mysqli_set_charset($connection, 'utf8');
-    $sql = "SELECT books.book_id,books.book_title,authors.author_name, comments.`comment`,comments.date,users.username
+
+    $sql = "SELECT  comments.`comment`,comments.date,users.username
             FROM comments 
             JOIN users_comments  ON users_comments.comment_id = comments.comment_id
             JOIN users ON users.user_id = users_comments.user_id
-            JOIN books ON books.book_id = users_comments.book_id
-            JOIN books_authors ON books.book_id=books_authors.book_id
-            JOIN authors ON authors.author_id = books_authors.author_id WHERE books.book_id =" . $_GET['book_id'];
-
+            WHERE users_comments.book_id =" . $_GET['book_id'] . " group by comments.`comment`
+				";
+    printAllBooks();
     $book_info = mysqli_query($connection, $sql);
+    ?>  <table = border = "4"><thead><th>Comments</th><th>User</th><th>Date</th></thead>
+    <?php
     while ($row = $book_info->fetch_assoc()) {
         ?>
-        <tr><td><?php echo '--' ?></td>
-        <td><?php echo '--'; ?></td>
-        <td><?php echo $row['comment']; ?></td>
-        <td><?php echo $row['username']; ?></td>
-        <td><?php echo $row['date']; ?></td>
-                <?php
-            }
-            ?>
 
-    </table>  
+        <tr><td><?php echo $row['comment']; ?></td>
+            <td><?php echo $row['username']; ?></td>
+            <td><?php echo $row['date']; ?></td>
+            <?php
+        }
+        ?>
+    </tr>
+    </table>
+
     <?php
+    echo '<pre>' . print_r($_GET,TRUE) . '</pre>';
 }

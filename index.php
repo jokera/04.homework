@@ -9,11 +9,11 @@ welcome_user();
 <a href ="add_book.php">Add new book </a>
 <a href ="add_author.php"> Add new author</a>
 <?php order_main_menu() ?>
-<table border ="4">     
+    
     <?php
     print_content();
     ?>   
-</table>
+
 <p></p>
 <?php
 include './include/footer.php';

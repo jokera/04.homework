@@ -20,8 +20,10 @@ order_main_menu();
     <input type="hidden" value="1"  name="isAddedBook">
     <input type="submit" value="Add"/>
     <?php
+    //$set_choice = "SELECT  book_title FROM books WHERE books.book_id =".$_GET['book_id'];
+
     $validator = true;
-    $my_choices = $_POST['books'];
+    $my_choices = $_POST['books'];// changes made here
     $title = $_POST['comment'];
     $title = mysqli_real_escape_string($connection, trim($title));
     $sql = "INSERT INTO comments(comment,date) VALUES ('$title',NOW())";
