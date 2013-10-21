@@ -54,6 +54,7 @@ function select_menue_options($sql, $id, $value) {
 
 function insert_user_data($my_choices, $title, $sql, $validator) {
     global $connection;
+
     mysqli_set_charset($connection, 'utf8');
     if ($_POST) {
         $user = $_SESSION['user_id'];
@@ -65,9 +66,9 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
                 mysqli_query($connection, $sql2);
             }
         } else {
-            // TODO: Second function logic
+
             foreach ($my_choices as $author) {
-                $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`) VALUES("' . (int) $book_id . '","' . $user . '")';
+                $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`,`book_id`) VALUES("' . (int) $book_id . '","' . $user . '","' . $_GET['book_id'] . '")';
                 mysqli_query($connection, $sql2);
             }
         }
@@ -88,7 +89,6 @@ function printAllBooks() {
     }
     $books = mysqli_query($connection, $sql);
 
-
     while ($row = $books->fetch_assoc()) {
         ?>
         <tr>
@@ -108,8 +108,8 @@ function printAllBooks() {
                         <?php
                         echo $author['author_name'] . '/ ';
                         ?></a><?php
-                    }
-                    ?>
+                }
+                ?>
             </td>
         </tr>
         <?php
@@ -279,4 +279,35 @@ function login() {
             echo '<p>Invalid username or password<p>';
         }
     }
+}
+
+function display_comments() {
+    ?>
+    <table border ="4">
+        <thead><th>Book Title</th><th>Authors</th><th>Comments</th><th>User</th><th>Date</th></thead>
+    <?php
+    global $connection;
+    mysqli_set_charset($connection, 'utf8');
+    $sql = "SELECT books.book_id,books.book_title,authors.author_name, comments.`comment`,comments.date,users.username
+            FROM comments 
+            JOIN users_comments  ON users_comments.comment_id = comments.comment_id
+            JOIN users ON users.user_id = users_comments.user_id
+            JOIN books ON books.book_id = users_comments.book_id
+            JOIN books_authors ON books.book_id=books_authors.book_id
+            JOIN authors ON authors.author_id = books_authors.author_id WHERE books.book_id =" . $_GET['book_id'];
+
+    $book_info = mysqli_query($connection, $sql);
+    while ($row = $book_info->fetch_assoc()) {
+        ?>
+        <tr><td><?php echo '--' ?></td>
+        <td><?php echo '--'; ?></td>
+        <td><?php echo $row['comment']; ?></td>
+        <td><?php echo $row['username']; ?></td>
+        <td><?php echo $row['date']; ?></td>
+                <?php
+            }
+            ?>
+
+    </table>  
+    <?php
 }

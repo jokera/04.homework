@@ -1,0 +1,7 @@
+body{
+    background-image: url("books3.jpg");
+    background-repeat: space;
+    background-size: auto;
+    position: relative;
+    height: 600px;
+}

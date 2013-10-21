@@ -20,8 +20,10 @@ include './include/functions.php';
     <input type="submit" value="Add"/>
     <?php
     $validator = false;
-    $my_choices = $_POST['authors'];
+    $my_choices = $_POST['authors']; 
     $title = $_POST['title'];
+    $title = mysqli_real_escape_string($connection,trim($title));
+    
     $sql = "INSERT INTO books(book_title) VALUES ('$title')";
     insert_user_data($my_choices, $title, $sql,$validator);
    

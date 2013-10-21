@@ -23,11 +23,12 @@ order_main_menu();
     $validator = true;
     $my_choices = $_POST['books'];
     $title = $_POST['comment'];
+    $title = mysqli_real_escape_string($connection, trim($title));
     $sql = "INSERT INTO comments(comment,date) VALUES ('$title',NOW())";
-        insert_user_data($my_choices, $title, $sql, $validator);
+    insert_user_data($my_choices, $title, $sql, $validator);
+    display_comments();
     ?>
 </form>
-
 <?php
 include './include/footer.php';
 
