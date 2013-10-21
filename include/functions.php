@@ -18,15 +18,11 @@ function add_author() {
     if (isset($_GET['author'])) {
         $author_name = trim($_GET['author']);
         $author_name = mysqli_real_escape_string($connection,$author_name);
-        // check if the author already exists
-         $query = mysqli_query($connection, 'SELECT author_name FROM authors');
-            while ($user = $query->fetch_assoc()) {
-                if ($user['author_name'] === $author_name) {
-                    echo "This author '".$author_name."' already exist " ;
-                    exit();
-                }
-            }
+        $result = 'author_name';
+        $sql = 'SELECT author_name FROM authors';
         $author_name = mysqli_real_escape_string($connection, $author_name);
+        $message = "This author '".$author_name."' already exist " ;
+        check_for_duplicate($author_name,$result,$sql,$message);
         mysqli_query($connection, "INSERT INTO authors(author_name) VALUES('$author_name')");
         header('Location: add_author.php');
         exit(0);
@@ -35,10 +31,18 @@ function add_author() {
 
 function check_for_duplicate($customer_choice,$result,$sql,$message){
     //TODO: solve the function
+    global $connection;
+    mysqli_set_charset($connection, 'utf8');
+    
+     $query = mysqli_query($connection, $sql);
+            while ($user = $query->fetch_assoc()) {
+                if ($user[$result] === $customer_choice) {
+                    echo $message;
+                    exit();
+                }
+            }
+    
 }
-
-
-
 
 function authors() {
     global $connection;
@@ -237,9 +241,9 @@ function registration($connection) {
 
             $sql = 'INSERT INTO users (username,password)VALUES("' . $username_esc . '","' . $password_esc . '")';
             $insert = mysqli_query($connection, $sql);
-            echo 'Successful registration';
+            header('Location: login.php');
             $_SESSION['user'] = $username_esc;
-            $_SESSION['is_logged'] = true;
+            $_SESSION['is_registered'] = true;
             exit;
         } else {
             echo 'Invalid username or password';
@@ -314,7 +318,7 @@ function display_comments() {
             JOIN users_comments  ON users_comments.comment_id = comments.comment_id
             JOIN users ON users.user_id = users_comments.user_id
             WHERE users_comments.book_id =" . $_GET['book_id'] . " group by comments.`comment` ORDER by date DESC";
-    // printAllBooks();
+     printAllBooks();
     $book_info = mysqli_query($connection, $sql);
     ?>  <table = border = "4"><thead><th>Comments</th><th>User</th><th>Date</th></thead>
     <?php

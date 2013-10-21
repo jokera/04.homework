@@ -4,6 +4,9 @@ $title = 'Login';
 $heading = 'Sign in';
 include './include/header.php';
 include './include/functions.php';
+if($_SESSION['is_registered']){
+    echo '<p>Succesfull registration</p>';
+}
 ?>
 <form method="POST">
     <div><a href="index.php">Home page</a></div>
