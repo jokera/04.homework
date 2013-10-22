@@ -1,12 +1,4 @@
 <?php
-// TASKS: 
-//Book title must appear in the book page
-//Validate NULL records
-//Make CSS changes
-//Improve functions performance - such as use the same function for password validation as the author validation
-//Use js and make the web site goood looking
-// Upload the site on your server.
-//Remove the commas after the author
 
 error_reporting(E_ALL ^ E_NOTICE);
 
