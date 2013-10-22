@@ -1,8 +1,12 @@
 <?php
 // TASKS: 
-// Check if the book already exists
-// check the author if alredy exists 
-
+//Book title must appear in the book page
+//Validate NULL records
+//Make CSS changes
+//Improve functions performance - such as use the same function for password validation as the author validation
+//Use js and make the web site goood looking
+// Upload the site on your server.
+//Remove the commas after the author
 
 error_reporting(E_ALL ^ E_NOTICE);
 
@@ -17,31 +21,30 @@ function add_author() {
     mysqli_set_charset($connection, 'utf8');
     if (isset($_GET['author'])) {
         $author_name = trim($_GET['author']);
-        $author_name = mysqli_real_escape_string($connection,$author_name);
+        $author_name = mysqli_real_escape_string($connection, $author_name);
         $result = 'author_name';
         $sql = 'SELECT author_name FROM authors';
         $author_name = mysqli_real_escape_string($connection, $author_name);
-        $message = "This author '".$author_name."' already exist " ;
-        check_for_duplicate($author_name,$result,$sql,$message);
+        $message = "This author '" . $author_name . "' already exist ";
+        check_for_duplicate($author_name, $result, $sql, $message);
         mysqli_query($connection, "INSERT INTO authors(author_name) VALUES('$author_name')");
         header('Location: add_author.php');
         exit(0);
     }
 }
 
-function check_for_duplicate($customer_choice,$result,$sql,$message){
+function check_for_duplicate($customer_choice, $result, $sql, $message) {
     //TODO: solve the function
     global $connection;
     mysqli_set_charset($connection, 'utf8');
-    
-     $query = mysqli_query($connection, $sql);
-            while ($user = $query->fetch_assoc()) {
-                if ($user[$result] === $customer_choice) {
-                    echo $message;
-                    exit();
-                }
-            }
-    
+
+    $query = mysqli_query($connection, $sql);
+    while ($user = $query->fetch_assoc()) {
+        if ($user[$result] === $customer_choice) {
+            echo $message;
+            exit();
+        }
+    }
 }
 
 function authors() {
@@ -128,8 +131,8 @@ function printAllBooks() {
                             <?php
                             echo $author['author_name'] . '/ ';
                             ?></a><?php
-                    }
-                    ?>
+                        }
+                        ?>
                 </td>
             </tr>
             <?php
@@ -318,7 +321,7 @@ function display_comments() {
             JOIN users_comments  ON users_comments.comment_id = comments.comment_id
             JOIN users ON users.user_id = users_comments.user_id
             WHERE users_comments.book_id =" . $_GET['book_id'] . " group by comments.`comment` ORDER by date DESC";
-     printAllBooks();
+    printAllBooks();
     $book_info = mysqli_query($connection, $sql);
     ?>  <table = border = "4"><thead><th>Comments</th><th>User</th><th>Date</th></thead>
     <?php
@@ -334,5 +337,4 @@ function display_comments() {
     </table>
 
     <?php
-   
 }
