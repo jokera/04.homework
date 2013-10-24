@@ -7,6 +7,7 @@ include './include/functions.php';
 order_main_menu();
 ?>
 <a href ="index.php">Home</a>
+<?php if($_SESSION['is_logged']){?>
 <form method="POST">
 
     Comment <input type="text" name ="comment"/><br>
@@ -32,5 +33,10 @@ order_main_menu();
       ?>
 </form>
 <?php
+}
+else {
+    description();
+    display_comments();
+}
 include './include/footer.php';
 

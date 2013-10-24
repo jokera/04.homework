@@ -1,7 +1,43 @@
 body{
-    background-image: url("books3.jpg");
+    background-image: url("book3.jpg");
     background-repeat: space;
-    background-size: auto;
+    background-size: cover;
     position: relative;
     height: 600px;
+
+}
+table{ 
+    border: 2px;
+    border-collapse: separate;  
+    border-radius: 35px;
+}
+table a{
+    text-decoration: none;
+    color: burlywood;
+}
+table a:hover{
+    background: gold;
+    opacity: 0.5;
+    cursor: pointer;
+    border-radius: 20px;
+
+}
+table td{
+    color: burlywood;
+}
+h1{
+   font-style: italic;
+   color: buttonhighlight;
+}
+a{
+    text-decoration: none;
+    color: burlywood;
+    
+}
+a:hover{
+    background: gold;
+    opacity: 0.5;
+    cursor: pointer;
+    border-radius: 20px;
+
 }

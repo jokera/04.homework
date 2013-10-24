@@ -100,7 +100,7 @@ function printAllBooks() {
     }
     $books = mysqli_query($connection, $sql);
     ?>
-    <table border= "4">
+    <table id="books">
         <?php
         while ($row = $books->fetch_assoc()) {
             ?>
@@ -146,7 +146,7 @@ function printAllAuthors() {
         }
         $books = mysqli_query($connection, $sql);
         ?>
-        <table border="4">
+        <table id="books">
             <?php
             while ($row = mysqli_fetch_assoc($books)) {
                 echo mysqli_error($connection);
