@@ -1,14 +1,14 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 $connection = mysqli_connect('localhost', 'gatakka', 'qwerty', 'books');
-
+mysqli_set_charset($connection, 'utf8');
 if (!$connection) {
     echo 'Error establishing a DB connection';
 }
 
 function add_author() {
     global $connection;
-    mysqli_set_charset($connection, 'utf8');
+
     if (isset($_GET['author'])) {
         $author_name = trim($_GET['author']);
         $author_name = mysqli_real_escape_string($connection, $author_name);
@@ -121,8 +121,8 @@ function printAllBooks() {
                             <?php
                             echo $author['author_name'] . '/ ';
                             ?></a><?php
-                        }
-                        ?>
+                    }
+                    ?>
                 </td>
             </tr>
             <?php
@@ -164,13 +164,13 @@ function printAllAuthors() {
                     LEFT JOIN authors 
                     ON authors.author_id = books_authors.author_id
                     WHERE books.book_title in 
-                                           (SELECT books.book_title
-                                            FROM books
-                                            LEFT JOIN books_authors 
-                                            ON books.book_id = books_authors.book_id
-                                            LEFT JOIN authors
-                                            ON authors.author_id = books_authors.author_id
-                                            WHERE authors.author_id=' . $_GET['author_id'] . ')';
+                        (SELECT books.book_title
+                         FROM books
+                         LEFT JOIN books_authors 
+                         ON books.book_id = books_authors.book_id
+                         LEFT JOIN authors
+                         ON authors.author_id = books_authors.author_id
+                         WHERE authors.author_id=' . $_GET['author_id'] . ')';
 
                     $authors = mysqli_query($connection, $sql);
                     echo '<td>';
@@ -312,7 +312,7 @@ function display_comments() {
             JOIN users ON users.user_id = users_comments.user_id
              JOIN books ON users_comments.book_id = books.book_id
             WHERE users_comments.book_id =" . $_GET['book_id'] . " group by comments.`comment` ORDER by date DESC";
-   
+
     $book_info = mysqli_query($connection, $sql);
     ?>  <table = border = "4"><thead><th>Comments</th><th>User</th><th>Date</th></thead>
     <?php
@@ -320,8 +320,8 @@ function display_comments() {
         ?>
         <tr><td><?php echo $row['comment']; ?></td>
             <td><?php echo $row['username']; ?></td>
-            <td><?php echo $row['date'];?></td>
-            <td><?php echo $row ['book_title']?></td>
+            <td><?php echo $row['date']; ?></td>
+
             <?php
         }
         ?>
@@ -329,7 +329,17 @@ function display_comments() {
     </table>
 
     <?php
-    header('Location :book.php');
-    exit;
-     //printAllBooks();
+}
+
+function description() {
+    global $connection;
+
+    $sql = "SELECT  author_name from authors
+JOIN books_authors ON books_authors.author_id = authors.author_id
+join books ON books_authors.book_id = books.book_id WHERE books.book_id =".$_GET['book_id'];
+    
+    $author = mysqli_query($connection, $sql);
+    while ($row = $author->fetch_assoc()) {
+        echo $row['author_name']."/";
+    }
 }

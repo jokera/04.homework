@@ -8,7 +8,7 @@ order_main_menu();
 ?>
 <a href ="index.php">Home</a>
 <form method="POST">
-   
+
     Comment <input type="text" name ="comment"/><br>
     Books <select name="books[]" multiple >
         <?php
@@ -20,19 +20,20 @@ order_main_menu();
     </select><br>
     <input type="hidden" value="1"  name="isAddedBook">
     <input type="submit" value="Add"/>
-<?php
-
-$validator = true;
-$my_choices = $_POST['books'];
-$title = $_POST['comment'];
-$title = mysqli_real_escape_string($connection, trim($title));
-$sql = "INSERT INTO comments(comment,date) VALUES ('$title',NOW())";
-insert_user_data($my_choices, $title, $sql, $validator);
-
-display_comments();
-?>
-</form>
     <?php
-    include './include/footer.php';
+    $validator = true;
+    $my_choices = $_POST['books'];
+    $title = $_POST['comment'];
+    $title = mysqli_real_escape_string($connection, trim($title));
+    $sql = "INSERT INTO comments(comment,date) VALUES ('$title',NOW())";
+    insert_user_data($my_choices, $title, $sql, $validator);
 
-    
+    display_comments();
+    echo "<h3>Description:</h3>";
+    echo "Authors: ";
+     description();
+    ?>
+</form>
+<?php
+include './include/footer.php';
+
