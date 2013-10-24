@@ -1,7 +1,5 @@
 <?php
-
 error_reporting(E_ALL ^ E_NOTICE);
-
 $connection = mysqli_connect('localhost', 'gatakka', 'qwerty', 'books');
 
 if (!$connection) {
@@ -308,12 +306,13 @@ function display_comments() {
     global $connection;
     mysqli_set_charset($connection, 'utf8');
 
-    $sql = "SELECT  comments.`comment`,comments.date,users.username
+    $sql = "SELECT  comments.`comment`,comments.date,users.username,book_title 
             FROM comments 
             JOIN users_comments  ON users_comments.comment_id = comments.comment_id
             JOIN users ON users.user_id = users_comments.user_id
+             JOIN books ON users_comments.book_id = books.book_id
             WHERE users_comments.book_id =" . $_GET['book_id'] . " group by comments.`comment` ORDER by date DESC";
-    printAllBooks();
+   
     $book_info = mysqli_query($connection, $sql);
     ?>  <table = border = "4"><thead><th>Comments</th><th>User</th><th>Date</th></thead>
     <?php
@@ -321,7 +320,8 @@ function display_comments() {
         ?>
         <tr><td><?php echo $row['comment']; ?></td>
             <td><?php echo $row['username']; ?></td>
-            <td><?php echo $row['date']; ?></td>
+            <td><?php echo $row['date'];?></td>
+            <td><?php echo $row ['book_title']?></td>
             <?php
         }
         ?>
@@ -329,4 +329,7 @@ function display_comments() {
     </table>
 
     <?php
+    header('Location :book.php');
+    exit;
+     //printAllBooks();
 }

@@ -4,7 +4,7 @@ $title = 'Login';
 $heading = 'Sign in';
 include './include/header.php';
 include './include/functions.php';
-if($_SESSION['is_registered']){
+if ($_SESSION['is_registered']) {
     echo '<p>Succesfull registration</p>';
 }
 ?>
@@ -18,8 +18,6 @@ if($_SESSION['is_registered']){
     login();
     ?>
 </form>
-
-
 <?php
 include './include/footer.php';
 ?>
