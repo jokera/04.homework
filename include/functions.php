@@ -201,8 +201,8 @@ function print_content() {
 
 function sort_options($filter1, $filter2) {
     ?>
-    Sort by<div><a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter1; ?>">Books</a>
-        <a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter2; ?>">Authors</a></div>
+    Sort <div><a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter1; ?>">ASC</a>
+        <a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter2; ?>">DESC</a></div>
     <?php
 }
 

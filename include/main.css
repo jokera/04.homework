@@ -41,3 +41,7 @@ a:hover{
     border-radius: 20px;
 
 }
+form{
+     font-style: italic;
+   color: buttonhighlight;
+}
