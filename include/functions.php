@@ -333,13 +333,17 @@ function display_comments() {
 
 function description() {
     global $connection;
-
-    $sql = "SELECT  author_name from authors
+    mysqli_set_charset($connection, 'utf8');
+    $sql = "SELECT  author_name,book_title from authors
 JOIN books_authors ON books_authors.author_id = authors.author_id
-join books ON books_authors.book_id = books.book_id WHERE books.book_id =".$_GET['book_id'];
-    
+join books ON books_authors.book_id = books.book_id WHERE books.book_id =" . $_GET['book_id'];
+
+    echo '<h3>Description: </h3>';
+    echo '<h5>Authors: </h5>';
     $author = mysqli_query($connection, $sql);
     while ($row = $author->fetch_assoc()) {
-        echo $row['author_name']."/";
+        echo $row['author_name'] . "/" . "";
+        $tmp = $row['book_title'];
     }
+    echo "<h5>Title </h5>" . $tmp;
 }

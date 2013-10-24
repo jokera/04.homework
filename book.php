@@ -27,12 +27,9 @@ order_main_menu();
     $title = mysqli_real_escape_string($connection, trim($title));
     $sql = "INSERT INTO comments(comment,date) VALUES ('$title',NOW())";
     insert_user_data($my_choices, $title, $sql, $validator);
-
+      description();
     display_comments();
-    echo "<h3>Description:</h3>";
-    echo "Authors: ";
-     description();
-    ?>
+      ?>
 </form>
 <?php
 include './include/footer.php';
