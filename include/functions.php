@@ -18,13 +18,12 @@ function add_author() {
         $author_name = mysqli_real_escape_string($connection, $author_name);
         $message = "This author '" . $author_name . "' already exist ";
         check_for_duplicate($author_name, $result, $sql, $message);
-        if(mb_strlen($author_name)>=3){
-        mysqli_query($connection, "INSERT INTO authors(author_name) VALUES('$author_name')");
-        header('Location: add_author.php');
-        exit(0);
-        }
-        else{
-            echo  'Invalid author name.The author name should be at least 3 symbols' ;
+        if (mb_strlen($author_name) >= 3) {
+            mysqli_query($connection, "INSERT INTO authors(author_name) VALUES('$author_name')");
+            header('Location: add_author.php');
+            exit(0);
+        } else {
+            echo 'Invalid author name.The author name should be at least 3 symbols';
         }
     }
 }
@@ -65,7 +64,11 @@ function select_menue_options($sql, $id, $value) {
     mysqli_set_charset($connection, 'utf8');
     $row = mysqli_query($connection, $sql);
     while ($r = $row->fetch_assoc()) {
-        echo "<option value =" . $r[$id] . ">" . $r[$value] . '</option>';
+        if ($r[$id] == $_GET['book_id']) {
+            echo "<option selected = 'selected' value =" . $r[$id] . ">" . $r[$value] . '</option>';
+        } else {
+            echo "<option value =" . $r[$id] . ">" . $r[$value] . '</option>';
+        }
     }
 }
 
@@ -74,27 +77,26 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
 
     mysqli_set_charset($connection, 'utf8');
     if ($_POST) {
-        if(mb_strlen($title)>=3){
-        $user = $_SESSION['user_id'];
-        mysqli_query($connection, $sql);
-        $book_id = mysqli_insert_id($connection);
-        if (!$validator) {
-            foreach ($my_choices as $author) {
-                $sql2 = 'INSERT INTO `books_authors`(`book_id`,`author_id`) VALUES("' . (int) $book_id . '","' . (int) $author . '")';
-                mysqli_query($connection, $sql2);
-            }
-             echo 'The book was successfully added';
-        } else {
+        if (mb_strlen($title) >= 3) {
+            $user = $_SESSION['user_id'];
+            mysqli_query($connection, $sql);
+            $book_id = mysqli_insert_id($connection);
+            if (!$validator) {
+                foreach ($my_choices as $author) {
+                    $sql2 = 'INSERT INTO `books_authors`(`book_id`,`author_id`) VALUES("' . (int) $book_id . '","' . (int) $author . '")';
+                    mysqli_query($connection, $sql2);
+                }
+                echo 'The book was successfully added';
+            } else {
 
-            foreach ($my_choices as $author) {
-                $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`,`book_id`) VALUES("' . (int) $book_id . '","' . $user . '","' . $author . '")';
-                mysqli_query($connection, $sql2);
+                foreach ($my_choices as $author) {
+                    $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`,`book_id`) VALUES("' . (int) $book_id . '","' . $user . '","' . $author . '")';
+                    mysqli_query($connection, $sql2);
+                }
+                echo 'The comment was successfully added';
             }
-             echo 'The comment was successfully added';
-        }
-        }
-        else{
-            echo  'Invalid value';
+        } else {
+            echo 'Invalid value';
         }
     }
 }
@@ -114,63 +116,63 @@ function printAllBooks() {
     $books = mysqli_query($connection, $sql);
     ?>
     <table id="books">
-        <?php
-        while ($row = $books->fetch_assoc()) {
-            ?>
+    <?php
+    while ($row = $books->fetch_assoc()) {
+        ?>
             <tr>
                 <td ><a href= "book.php?book_id=<?php echo $row['book_id'] ?>"> <?php echo $row['book_title']; ?></a></td>
                 <td>
-                    <?php
-                    $sql = "SELECT *
+        <?php
+        $sql = "SELECT *
                         FROM authors 
                         JOIN books_authors ON authors.author_id=books_authors.author_id 
                         WHERE books_authors.book_id =" . $row['book_id'];
 
-                    $authors = mysqli_query($connection, $sql);
+        $authors = mysqli_query($connection, $sql);
 
-                    while ($author = mysqli_fetch_assoc($authors)) {
-                        ?>
+        while ($author = mysqli_fetch_assoc($authors)) {
+            ?>
                         <a href= "index.php?author_id=<?php echo $author['author_id']; ?>">
-                            <?php
-                            echo $author['author_name'] . '/ ';
-                            ?></a><?php
-                    }
-                    ?>
+                        <?php
+                        echo $author['author_name'] . '/ ';
+                        ?></a><?php
+                        }
+                        ?>
                 </td>
             </tr>
-            <?php
-        }
-        ?>
-    </table>
-    <?php
-}
-
-function printAllAuthors() {
-    sort_options($filter1 = 'Bsort=ON', $filter2 = 'Asort=ON');
-    global $connection;
-    $check = false;
-    mysqli_set_charset($connection, 'utf8');
-    if ($_GET['author_id']) {
-
-        if ($_GET['Bsort'] === 'ON') {
-            $sql = 'SELECT * FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'] . ' ORDER BY book_title DESC';
-        } else {
-            $sql = 'SELECT * FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'];
-        }
-        $books = mysqli_query($connection, $sql);
-        ?>
-        <table id="books">
-            <?php
-            while ($row = mysqli_fetch_assoc($books)) {
-                echo mysqli_error($connection);
+                    <?php
+                }
                 ?>
+    </table>
+        <?php
+    }
+
+    function printAllAuthors() {
+        sort_options($filter1 = 'Bsort=ON', $filter2 = 'Asort=ON');
+        global $connection;
+        $check = false;
+        mysqli_set_charset($connection, 'utf8');
+        if ($_GET['author_id']) {
+
+            if ($_GET['Bsort'] === 'ON') {
+                $sql = 'SELECT * FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'] . ' ORDER BY book_title DESC';
+            } else {
+                $sql = 'SELECT * FROM books JOIN books_authors on books.book_id = books_authors.book_id WHERE books_authors.author_id =' . $_GET['author_id'];
+            }
+            $books = mysqli_query($connection, $sql);
+            ?>
+        <table id="books">
+        <?php
+        while ($row = mysqli_fetch_assoc($books)) {
+            echo mysqli_error($connection);
+            ?>
 
 
                 <tr><td><a href= "book.php?book_id=<?php echo $row['book_id'] ?>"> <?php echo $row['book_title']; ?></a>
 
                     </td>
-                    <?php
-                    $sql = 'SELECT books.book_title,books.book_id, authors.author_name, authors.author_id
+            <?php
+            $sql = 'SELECT books.book_title,books.book_id, authors.author_name, authors.author_id
                     FROM books
                     LEFT JOIN books_authors
                     ON books.book_id = books_authors.book_id
@@ -185,35 +187,35 @@ function printAllAuthors() {
                          ON authors.author_id = books_authors.author_id
                          WHERE authors.author_id=' . $_GET['author_id'] . ')';
 
-                    $authors = mysqli_query($connection, $sql);
-                    echo '<td>';
-                    while ($r = mysqli_fetch_assoc($authors)) {
-                        if ($row['book_title'] === $r['book_title']) {
+            $authors = mysqli_query($connection, $sql);
+            echo '<td>';
+            while ($r = mysqli_fetch_assoc($authors)) {
+                if ($row['book_title'] === $r['book_title']) {
 
-                            echo '<a href="index.php?author_id=' . (int) $r['author_id'] . '">' . $r['author_name'] . '/ ';
-                            echo '</a>';
-                        }
-                    }
+                    echo '<a href="index.php?author_id=' . (int) $r['author_id'] . '">' . $r['author_name'] . '/ ';
+                    echo '</a>';
                 }
-                ?>
-                </td></tr>
-            <?php
+            }
         }
         ?>
+                </td></tr>
+                <?php
+            }
+            ?>
     </table>
-    <?php
-}
-
-function print_content() {
-    if (!$_GET['author_id']) {
-        printAllBooks();
-    } else {
-        printAllAuthors();
+        <?php
     }
-}
 
-function sort_options($filter1, $filter2) {
-    ?>
+    function print_content() {
+        if (!$_GET['author_id']) {
+            printAllBooks();
+        } else {
+            printAllAuthors();
+        }
+    }
+
+    function sort_options($filter1, $filter2) {
+        ?>
     Sort <div><a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter1; ?>">ASC</a>
         <a href ="index.php?author_id=<?php echo $_GET['author_id'] ?>&<?php echo $filter2; ?>">DESC</a></div>
     <?php
@@ -335,9 +337,9 @@ function display_comments() {
             <td><?php echo $row['username']; ?></td>
             <td><?php echo $row['date']; ?></td>
 
-            <?php
-        }
-        ?>
+        <?php
+    }
+    ?>
     </tr>
     </table>
 

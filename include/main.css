@@ -25,6 +25,12 @@ table a:hover{
 table td{
     color: burlywood;
 }
+table td:hover{
+    background: gold;
+    opacity: 0.5;
+    cursor: pointer;
+    border-radius: 20px;
+}
 h1{
    font-style: italic;
    color: buttonhighlight;
