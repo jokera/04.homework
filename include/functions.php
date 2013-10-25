@@ -1,4 +1,5 @@
 <?php
+// TODO : Validate empty book and unselected author
 error_reporting(E_ALL ^ E_NOTICE);
 $connection = mysqli_connect('localhost', 'gatakka', 'qwerty', 'books');
 mysqli_set_charset($connection, 'utf8');
@@ -17,9 +18,14 @@ function add_author() {
         $author_name = mysqli_real_escape_string($connection, $author_name);
         $message = "This author '" . $author_name . "' already exist ";
         check_for_duplicate($author_name, $result, $sql, $message);
+        if(mb_strlen($author_name)>=3){
         mysqli_query($connection, "INSERT INTO authors(author_name) VALUES('$author_name')");
         header('Location: add_author.php');
         exit(0);
+        }
+        else{
+            echo  'Invalid author name.The author name should be at least 3 symbols' ;
+        }
     }
 }
 
@@ -68,6 +74,7 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
 
     mysqli_set_charset($connection, 'utf8');
     if ($_POST) {
+        if(mb_strlen($title)>=3){
         $user = $_SESSION['user_id'];
         mysqli_query($connection, $sql);
         $book_id = mysqli_insert_id($connection);
@@ -76,12 +83,18 @@ function insert_user_data($my_choices, $title, $sql, $validator) {
                 $sql2 = 'INSERT INTO `books_authors`(`book_id`,`author_id`) VALUES("' . (int) $book_id . '","' . (int) $author . '")';
                 mysqli_query($connection, $sql2);
             }
+             echo 'The book was successfully added';
         } else {
 
             foreach ($my_choices as $author) {
                 $sql2 = 'INSERT INTO `users_comments`(`comment_id`,`user_id`,`book_id`) VALUES("' . (int) $book_id . '","' . $user . '","' . $author . '")';
                 mysqli_query($connection, $sql2);
             }
+             echo 'The comment was successfully added';
+        }
+        }
+        else{
+            echo  'Invalid value';
         }
     }
 }
